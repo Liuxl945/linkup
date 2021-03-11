@@ -1,0 +1,57 @@
+{
+    "editor.fontSize": 16,
+    "editor.tabSize": 4,
+    "[javascript]": {
+        "editor.defaultFormatter": "HookyQR.beautify"
+    },
+    "[html]": {
+        "editor.defaultFormatter": "HookyQR.beautify"
+    },
+    "editor.wordWrap": "on",
+    "vetur.format.defaultFormatter.js": "vscode-typescript",
+    "vetur.format.options.tabSize": 4,
+    "vetur.format.defaultFormatterOptions": {
+        "js-beautify-html": {
+            "wrap_attributes": "force-expand-multiline"
+        },
+        "prettyhtml": {
+            "printWidth": 100,
+            "singleQuote": false,
+            "wrapAttributes": false,
+            "sortAttributes": false
+        }
+    },
+    "beautify.config": {
+        "js": {
+            "indent_size": 4,
+            "break_chained_methods": true,
+            "unindent_chained_methods": true,
+            "brace_style": "none,preserve-inline",
+            "space_before_conditional": false
+        }
+    },
+    "fileheader.customMade": {    //此为头部注释
+        "Description": "",
+        "Version": "1.0",
+        "Autor": "刘学良",
+        "Date": "Do not edit",
+        "LastEditors": "刘学良",
+        "LastEditTime": "Do not edit"
+    },
+    "fileheader.cursorMode": {  //此为函数注释
+        "description":"",
+        "param": "",
+        "return": "",
+        "author":"刘学良"
+    },
+    "fileheader.configObj": {
+        "autoAdd": true, // 默认开启自动添加头部注释，当文件没有设置头部注释时保存会自动添加
+        "autoAlready": true, // 默认开启
+        "prohibitAutoAdd": [
+            "json",
+            "md"
+        ], // 禁止.json .md文件，自动添加头部注释
+        "wideSame": false, // 设置为true开启
+        "wideNum": 13 // 字段长度 默认为13
+    }
+}
