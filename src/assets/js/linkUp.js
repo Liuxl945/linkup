@@ -3,8 +3,9 @@ import { mahjong } from "../config/mahjong"
 import tools from "../utils/tools"
 
 class LinkUp {
+  constructor (opt,vm) {
 
-  constructor (opt) {
+    this.$vm = vm
     // 游戏相关的元素
     this.lv = opt.lv
     this.level = {
@@ -13,7 +14,7 @@ class LinkUp {
         // row: 8,
         row: 10,
         // col: 8,
-        col: 10
+        col: 12
       },
       "middle": {
         // row: 8,
@@ -28,6 +29,9 @@ class LinkUp {
         col: 19
       }
     }
+
+    this.score = 0
+    this.scoreSpeed = 0.5
 
     /**
      * 麻将对应参数
@@ -54,8 +58,8 @@ class LinkUp {
     // 实例化canvas
     this.canvas = new Canvas({
       canvas: opt.dom,
-      w: 1160,
-      h: 750,
+      w: 768,
+      h: 640,
       size: this.level[this.lv]
     })
     
@@ -340,6 +344,8 @@ class LinkUp {
       const elements = this.elements,
             el1 = elements[y1][x1],
             el2 = elements[y2][x2]
+
+            
    
       if (el1.type === el2.type) { // 首先得两个元素都是同类型的
         if (
@@ -368,7 +374,6 @@ class LinkUp {
     const {x: sx, y: sy} = start,
           {x: ex, y: ey} = end
 
-    // console.log(sx, sy, ex, ey)
     // 水平检测
     return this.horizonCheck(sx, sy, ex, ey, el) || this.verticalCheck(sx, sy, ex, ey, el) || this.turnOnceCheck(sx, sy, ex, ey, el) || this.turnTwiceCheck(sx, sy, ex, ey, el)
   }
@@ -478,6 +483,7 @@ class LinkUp {
   // 2. A可以通过一个拐角检测找到C，然后C可以通过垂直或水平检测找到B。
   turnTwiceCheck (x1, y1, x2, y2, el) {
     const { col, row } = this.level[this.lv]
+
     // console.log(col, row)
     for (let i = 0; i < col; i ++) {
       for (let j = 0; j < row; j ++) {
@@ -509,6 +515,8 @@ class LinkUp {
         ) {
           // A可以通过垂直或水平检测找到C，然后C可以通过一个拐角检测找到B；
           this.lineInfo = [...lineInfo, [x2, y2]]
+
+          
           return true
         } else if (
           this.turnOnceCheck(i, j, x2, y2, el) &&
@@ -519,7 +527,9 @@ class LinkUp {
           )
         ) {
           // A可以通过一个拐角检测找到C，然后C可以通过垂直或水平检测找到B。
-          this.lineInfo = [[x1, y1], [i, j], ...lineInfo]
+          this.lineInfo = [[x1, y1], ...lineInfo]
+          // this.lineInfo = [[x1, y1], [i, j], ...lineInfo]
+          
           return true
         }
       }
@@ -569,15 +579,20 @@ class LinkUp {
       
       this.canvas.drawBorder(Object.assign({}, this.firstClick, {"color": "red"}))
       this.canvas.drawBorder(Object.assign({}, this.secondClick, {"color": "red"}))
+      
       await this.drawLine()
+      
     }
 
+    this.score += this.scoreSpeed
     await this.drawElement() // 重绘
     // 判断游戏状态
     await this.checkGameStatus()
     this.firstClick = null
     this.secondClick = null
     this.gameStatus = "normal"
+
+    this.$vm.$store.dispatch("addScore") //增加分数
   }
   
   async drawLine () {

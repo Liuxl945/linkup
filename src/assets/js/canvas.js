@@ -43,7 +43,10 @@ class Canvas {
       let changeAxis = x1 === x2 ? "Y" : "X" // 沿着哪条轴来画
 
       const direction = (changeAxis === "Y" ? (y1 - y2) : (x1 - x2)) > 0 ? "minus" : "plus"
-      const speed = Math.abs(changeAxis === "Y" ? (y1 - y2) : (x1 - x2)) / 10
+      // const speed = Math.abs(changeAxis === "Y" ? (y1 - y2) : (x1 - x2)) / 10
+      const speed = Math.abs(changeAxis === "Y" ? (y1 - y2) : (x1 - x2)) / mahjong.speed
+
+      console.log(speed)
 
       let timer = null
 
@@ -68,6 +71,9 @@ class Canvas {
         ctx.stroke()
         x1 = newX
         y1 = newY
+
+        // console.log(changeAxis, newY, y2, changeAxis, newX, x2, speed)
+
         if ((changeAxis === "Y" && newY === y2) || (changeAxis === "X" && newX === x2)) {
           clearInterval(timer)
           resolve()
