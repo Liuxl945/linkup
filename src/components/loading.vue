@@ -67,7 +67,7 @@ export default {
     align-items: center;
     top: 0;
     bottom: 0;
-    background: rgb(221, 61, 47, 0.7);
+    background: rgb(0, 167, 188, 1);
     color: #fff;
 
     .loading3{

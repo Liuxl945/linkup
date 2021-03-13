@@ -7,7 +7,9 @@ export default new Vuex.Store({
     state: {
         score: 0,
         scoreSpeed: 1,
-        timer: 120
+        timer: 120,
+        init: true,
+        over: false,
     },
     mutations: {
         ["SET_SCORE"](state, score) {
@@ -15,6 +17,12 @@ export default new Vuex.Store({
         },
         ["SET_TIMER"](state, timer) {
             state.timer = timer
+        },
+        ["SET_START"](state, bool) {
+            state.init = bool
+        },
+        ["SET_OVER"](state, bool) {
+            state.over = bool
         }
     },
     actions: {

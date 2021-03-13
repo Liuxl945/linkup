@@ -16,13 +16,17 @@
         <p>退出</p>
       </div>
 
-      <div class="start">
+      <div class="start" @click="startGame" :class="!start? 'disabled' : ''">
         <img src="@/assets/image/開始.png" class="image " alt="">
         <p>开始</p>
       </div>
     </div>
     <div class="game-wrapper">
-      <canvas id="J_canvas" class="canvas"></canvas>
+      <canvas id="J_canvas" class="canvas" width="768" height="640"></canvas>
+
+      <div class="game-start" v-if="start">
+        <img src="@/assets/image/未标题-1.png" alt="" srcset="">
+      </div>
     </div>
 
     <div class="right-wapper">
@@ -34,7 +38,16 @@
         <img src="@/assets/image/進度條.png" :style="position" class="image" alt="" srcset="">
       </div>
       
-      
+    </div>
+
+    <div class="game-over" v-if="over">
+
+      <div class="wapper">
+        <img src="@/assets/image/showKuang.png" class="bg" alt="" srcset="">
+
+        <p class="text">分数：{{score}}</p>
+        <img src="@/assets/image/在玩一遍.png" class="btn" @click="restartGame" alt="" srcset="">
+      </div>
       
     </div>
   </div>
@@ -43,60 +56,81 @@
 <script>
 import LinkUp from "@/assets/js/linkUp"
 
+
 export default {
-    mounted() {
-        this.$nextTick(() => {
-            let lv = "primary"
+  methods: {
+    startGame() {
 
-            const linkup = new LinkUp({
-                dom: "#J_canvas",
-                lv: lv
-            }, this)
-
-            linkup.init()
-
-            this.$store.dispatch("intervalTimer")
-
-            // const lvGroup = document.querySelector("#J_level")
-
-            // lvGroup.addEventListener("click", changeLevel, false)
-
-            // function changeLevel (ev) {
-            // let e = ev || window.event,
-            //     tar = e.target || e.srcElement
-
-            // if (tar.nodeName.toUpperCase() === "BUTTON") {
-            //     if (confirm(`是否选择${tar.dataset.levelText}？`)) {
-            //         linkup.changeLevel(tar.dataset.level)
-            //         }
-            //     }
-            // }
-        })
-        
-    },
-    watch: {
-      timer() {
-        if(this.timer === 0) {
-          console.log("游戏结束")
-        }
+      if(!this.start) {
+        return
       }
+
+      this.$store.commit("SET_START", false)
+
+      this.$nextTick(() => {
+        let lv = "primary"
+        this.linkup = new LinkUp({
+            dom: "#J_canvas",
+            lv: lv
+        }, this)
+
+        this.linkup.init()
+        this.$store.dispatch("intervalTimer")
+      })
     },
-    computed: {
-      score() {
-        return this.$store.state.score
-      },
-      timer() {
-        return this.$store.state.timer
-      },
-      position() {
-        return `top: ${(120 - this.timer ) / 120 * 466 }px;`
+    restartGame() {
+      this.$store.commit("SET_SCORE", 0)
+      this.$store.commit("SET_TIMER", 120)
+      this.$store.commit("SET_OVER", false)
+      this.$store.commit("SET_START", false)
+      this.$store.dispatch("intervalTimer")
+
+      this.linkup.restartGame()
+    }
+  },
+  
+  watch: {
+    timer() {
+      if(this.timer === 0) {
+        console.log("游戏结束")
+        this.$store.commit("SET_OVER", true)
       }
     }
+  },
+  computed: {
+    score() {
+      return this.$store.state.score
+    },
+    timer() {
+      return this.$store.state.timer
+    },
+    position() {
+      return `top: ${(120 - this.timer ) / 120 * 466 }px;`
+    },
+    start() {
+      return this.$store.state.init
+    },
+    over() {
+      return this.$store.state.over
+    }
+  }
 }
 </script>
 
 <style lang="scss" scoped>
 // @import url("../assets/scss/index.scss");
+
+@keyframes rotate{
+    0%{
+      transform:scale(1.1)
+    }
+    50%{
+    	transform:scale(1);
+    }
+    100%{
+      transform: scale(1.1);
+    }
+}
 
 html, body {
     margin: 0;
@@ -160,6 +194,10 @@ html, body {
         p{
           margin-top: 5px
         }
+        
+      }
+      .disabled{
+        cursor: not-allowed;
       }
       .back{
         margin-bottom: 30px;
@@ -214,7 +252,59 @@ html, body {
   
     .game-wrapper {
       flex: 1;
+      position: relative;
+      .game-start{
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        img{
+          height: 250px;
+          animation: rotate 1.5s linear infinite;
+        }
+      }
     }
   
+  }
+
+  .game-over{
+    background: url('../assets/image/bg-2.png') no-repeat center center;
+    position: absolute;
+    z-index: 100;
+    width: 100vw;
+    height: 100vh;
+    left: 0;
+    top: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    .bg{
+      width: 500px;
+    }
+
+    .btn{
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: 14%;
+      z-index: 10;
+      width: 180px;
+      cursor: pointer;
+    }
+
+    .text{
+      position: absolute;
+      left: 50%;
+      transform: translate(-50%);
+      font-weight: 600;
+      font-size: 36px;
+      color: #0070c1;
+      top: 55%;
+    }
+
+    .wapper{
+      position: absolute;
+      transform: translateY(-10%);
+    }
   }
 </style>

@@ -50,7 +50,6 @@ class LinkUp {
 
     this.gameStatus = "normal"
 
-    
     this.image = new Image()
     this.image.src = this.mahjong.image || "/img/mahjong.png"
     this.lineInfo = []
@@ -64,6 +63,23 @@ class LinkUp {
     })
     
     // this.init()
+  }
+
+  async restartGame() {
+    this.shuffleElement = []
+
+    // 保存元素的容器
+    this.elements = []
+    this.testElements = [] // 这里保存着用于测试的元素
+
+    this.firstClick = null // 点击第一个元素标识
+    this.secondClick = null // 点击第二个元素标识
+    this.lineInfo = []
+
+    await this.genElement()
+
+    // 绘制麻将
+    this.drawElement()
   }
 
   async init () {

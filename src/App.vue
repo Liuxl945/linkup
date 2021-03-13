@@ -3,7 +3,7 @@
 
         <v-index></v-index>
 
-        <!-- <v-loading v-if="loading" :progress="progress" :tips="loadingTips"></v-loading> -->
+        <v-loading v-if="loading" :progress="progress" :tips="loadingTips"></v-loading>
     </div>
 </template>
 
